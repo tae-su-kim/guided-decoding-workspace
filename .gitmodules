@@ -1,0 +1,6 @@
+[submodule "vllm-guided-decoding"]
+	path = vllm-guided-decoding
+	url = https://github.com/tae-su-kim/vllm-guided-decoding
+[submodule "sglang-guided-decoding"]
+	path = sglang-guided-decoding
+	url = https://github.com/tae-su-kim/sglang-guided-decoding
