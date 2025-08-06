@@ -1,7 +1,12 @@
 #! /bin/bash
 
-MODEL_NAME="/workspace/HF-Qwen3-32B"
-TOKENIZER="/workspace/HF-Qwen3-32B"
+MODEL_NAME=$1
+TOKENIZER=$1
+DATASET=$2
+if [ -z "$DATASET" ]; then
+    DATASET="squeezebits/augmented-json-mode-eval"
+fi
+
 host="127.0.0.1"
 port=30000
 TP=4
@@ -9,7 +14,7 @@ DP=1
 MAX_BATCH_SIZE=32
 REASONING_BUDGET=300
 
-source /workspace/vllm/bin/activate
+source /workspace/venvs/vllm/bin/activate
 
 # Function to check if server is ready
 check_server_health() {
@@ -51,7 +56,7 @@ cleanup_server() {
 # Set trap to cleanup on script exit
 trap cleanup_server EXIT
 
-benchmark_dir="Qwen3_32B_vLLM/vllm_v1_TP${TP}_DP${DP}/1k_xgrammar-guided-reasoning-${REASONING_BUDGET}-budget"
+benchmark_dir="results/vllm/vllm_v1_TP${TP}_DP${DP}/1k_xgrammar-guided-reasoning-${REASONING_BUDGET}-budget"
 mkdir -p ${benchmark_dir}
 
 for VUSER in 32 16 8; do
@@ -92,6 +97,7 @@ for VUSER in 32 16 8; do
         --host ${host} \
         --port ${port} \
         --dataset xgrammar_bench \
+        --dataset-path ${DATASET} \
         --model ${MODEL_NAME}  \
         --tokenizer ${TOKENIZER} \
         --output-len 640 \

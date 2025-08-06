@@ -224,9 +224,12 @@ def sample_requests(
 
     elif args.dataset == "xgrammar_bench":
         requests: list[SampleRequest] = []
-        dataset = datasets.load_dataset("squeezebits/augmented-json-mode-eval", split="train")
+        if args.dataset_path is None or args.dataset_path == "":
+            dataset = datasets.load_dataset("squeezebits/augmented-json-mode-eval", split="train")
+        else:
+            dataset = datasets.load_dataset(args.dataset_path, split=args.dataset_split)
         # dataset = datasets.load_dataset("NousResearch/json-mode-eval", split="train")
-        
+
         full_dataset_len = len(dataset)
 
         # def _filter_func(item):
@@ -1125,6 +1128,20 @@ if __name__ == "__main__":
         action="store_true",
         default=False,
         help="Whether to use dummy content or not.",
+    )
+
+    parser.add_argument(
+        "--dataset-path",
+        type=str,
+        default=None,
+        help="Path to the dataset.",
+    )
+
+    parser.add_argument(
+        "--dataset-split",
+        type=str,
+        default="train",
+        help="Split of the dataset.",
     )
     args = parser.parse_args()
     main(args)

@@ -1,14 +1,19 @@
 #! /bin/bash
 
-MODEL_NAME="/workspace/Qwen3-32B-FP8-Dynamic"
-TOKENIZER="/workspace/Qwen3-32B-FP8-Dynamic"
+MODEL_NAME=$1
+TOKENIZER=$1
+DATASET=$2
+if [ -z "$DATASET" ]; then
+    DATASET="squeezebits/augmented-json-mode-eval"
+fi
+
 host="127.0.0.1"
 port=30000
 TP=4
 MAX_RUNNING_REQUESTS=32
 REASONING_BUDGET=300
 
-source /workspace/sglang/bin/activate
+source /workspace/venvs/sglang/bin/activate
 
 # Function to check if server is ready
 check_server_health() {
@@ -50,7 +55,7 @@ cleanup_server() {
 # Set trap to cleanup on script exit
 trap cleanup_server EXIT
 
-benchmark_dir="Qwen3_32B_SGLang/xgrammar-guided-reasoning-${REASONING_BUDGET}-budget-fp8"
+benchmark_dir="results/sglang/xgrammar-guided-reasoning-${REASONING_BUDGET}-budget-fp8"
 mkdir -p ${benchmark_dir}
 
 for VUSER in 32 16 8; do
@@ -94,6 +99,7 @@ for VUSER in 32 16 8; do
         --host ${host} \
         --port ${port} \
         --dataset xgrammar_bench \
+        --dataset-path ${DATASET} \
         --model ${MODEL_NAME}  \
         --tokenizer ${TOKENIZER} \
         --output-len 1 \
@@ -115,6 +121,7 @@ for VUSER in 32 16 8; do
         --host ${host} \
         --port ${port} \
         --dataset xgrammar_bench \
+        --dataset-path ${DATASET} \
         --model ${MODEL_NAME}  \
         --tokenizer ${TOKENIZER} \
         --output-len 640 \
