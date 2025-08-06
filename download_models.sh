@@ -4,7 +4,7 @@
 set -e
 set -o pipefail
 
-source /workspace/env/bin/activate
+source /workspace/sglang/bin/activate
 
 # Download model
 echo "Downloading Qwen3-32B model..."
