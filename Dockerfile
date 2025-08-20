@@ -28,6 +28,9 @@ RUN SETUPTOOLS_SCM_PRETEND_VERSION=0.0.1 VLLM_USE_PRECOMPILED=1 /workspace/venvs
 RUN /workspace/venvs/vllm/bin/pip install "transformers<4.54.0"
 RUN /workspace/venvs/vllm/bin/pip install datasets
 
+COPY ./download_dataset.sh /workspace/download_dataset.sh
+RUN bash /workspace/download_dataset.sh
+
 COPY ./benchmark /workspace/benchmark
 COPY ./download_models.sh /workspace/download_models.sh
 COPY ./benchmark_vllm_baseline.sh /workspace/benchmark_vllm_baseline.sh
